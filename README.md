@@ -8,6 +8,7 @@
     <img src="https://img.shields.io/badge/Photon-Fusion_2-004480" alt="Photon Fusion 2">
     <img src="https://img.shields.io/badge/Status-Private_Preparation-E9A23B" alt="Private Preparation">
   </p>
+  <p><a href="https://wjddh1998.itch.io/rusty-iron-project"><strong>⬇ Playable Windows Build</strong></a> · <a href="#code-samples"><strong>🧩 Review Code Samples</strong></a></p>
   <p><a href="#overview">Overview</a> · <a href="#my-role">My Role</a> · <a href="#core-systems">Core Systems</a> · <a href="#code-samples">Code Samples</a> · <a href="#tech-stack">Tech Stack</a></p>
 </div>
 
@@ -15,7 +16,7 @@
 
 ## Gameplay Preview
 
-> Gameplay 영상과 기능별 GIF는 Public 전환 전 추가합니다.
+> Gameplay 영상과 기능별 GIF는 Public 전환 전 추가합니다. 현재 Windows Alpha 빌드와 데모 영상은 [itch.io 프로젝트 페이지](https://wjddh1998.itch.io/rusty-iron-project)에서 확인할 수 있습니다.
 
 <!-- Public 전환 전 docs/images의 Gameplay, Quick Boost, Lock-On, PvP GIF를 이 위치에 배치합니다. -->
 
@@ -29,6 +30,7 @@
 | Role | 팀장 · Unity Client / Gameplay Programmer |
 | Engine | Unity 6000.4.11f1 |
 | Repository | 채용 검토용 Showcase |
+| Playable Build | [Windows Alpha on itch.io](https://wjddh1998.itch.io/rusty-iron-project) |
 
 ### Project Focus
 
