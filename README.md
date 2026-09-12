@@ -85,10 +85,10 @@ Host의 State Authority를 기준으로 참가 인원 확인, 세션 잠금, 전
 
 | 영역 | 코드 | 확인할 수 있는 내용 |
 |---|---|---|
-| Combat | [CodeSamples/Combat](./CodeSamples/Combat) | Request–Resolver–Result 분리, Authority 검증, Shield·Armor·ACS 처리 순서 |
-| Movement | [CodeSamples/Movement](./CodeSamples/Movement) | 수직·수평 이동 계산, 에너지 소비, 회전 우선순위, 단일 이동 Writer |
-| Targeting | [CodeSamples/Targeting](./CodeSamples/Targeting) | Hard Lock 후보 필터링, Runner 검증, Lag Compensation 탐색 |
-| Match Flow | [CodeSamples/MatchFlow](./CodeSamples/MatchFlow) | 싱글·멀티 진입, 세션 잠금, Server 전용 Spawn 흐름 |
+| Combat | [CodeSamples/Combat](./CodeSamples/Combat/README.md) | Request–Resolver–Result 분리, Authority 검증, Shield·Armor·ACS 처리 순서 |
+| Movement | [CodeSamples/Movement](./CodeSamples/Movement/README.md) | 수직·수평 이동 계산, 에너지 소비, 회전 우선순위, 단일 이동 Writer |
+| Targeting | [CodeSamples/Targeting](./CodeSamples/Targeting/README.md) | Hard Lock 후보 필터링, Runner 검증, Lag Compensation 탐색 |
+| Match Flow | [CodeSamples/MatchFlow](./CodeSamples/MatchFlow/README.md) | 싱글·멀티 진입, 세션 잠금, Server 전용 Spawn 흐름 |
 
 ## Technical Decisions
 
