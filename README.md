@@ -51,14 +51,14 @@
 
 ### 1. Networked Movement
 
-`FixedUpdateNetwork`에서 입력을 수집하고 네트워크 상태, 이동 계산, 프레젠테이션을 분리했습니다. 이동과 부스트가 동일 프레임에 중복 적용되지 않도록 하나의 컨트롤러가 실행 순서를 조정합니다.
+`FixedUpdateNetwork`에서 입력을 수집하고 네트워크 상태, 이동 계산, 프레젠테이션을 분리했습니다. 이동과 부스트가 같은 Tick에 중복 적용되지 않도록 하나의 컨트롤러가 실행 순서를 조정합니다.
 
 ```mermaid
 flowchart LR
-    I[Player Input] --> M[PlayerMovement]
-    M --> N[Network Controller]
-    N --> L[Movement Motor]
+    I[Player Input] --> N[Network Controller]
+    N --> M[Movement Motor]
     N --> B[Boost Motor]
+    M --> C[CharacterController]
 ```
 
 ### 2. Authoritative Damage
@@ -67,48 +67,57 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    P[Hit Detection] --> Q[Damage Request]
-    Q --> R[Damage Resolver]
-    R --> S[Combat State]
-    S --> T[Damage Resolved]
+    A[Damage Request] --> B{State Authority}
+    B -->|Valid| C[Damage Resolver]
+    C --> D[Shield · Armor · ACS]
+    D --> E[Resolved Result]
 ```
 
 ### 3. Targeting
 
-Hard Lock 대상 관리와 무기 발사 시점의 타겟 제공자를 분리했습니다. 멀티플레이 탐색에는 Fusion Lag Compensation을 사용합니다.
+Hard Lock 대상 등록과 후보 필터링을 분리하고, 무기 발사 탐색에는 Photon Fusion Lag Compensation을 사용합니다. 자기 자신·다른 Runner·사망 대상을 제외한 뒤 검색 반경과 시야각을 통과한 가장 가까운 후보를 선택합니다.
 
 ### 4. Match Flow
 
-Host의 State Authority를 기준으로 참가자 준비 상태, 전투 시작, 3분 타이머, 사망·타임아웃 판정과 결과 화면 전환을 관리합니다.
+Host의 State Authority를 기준으로 참가 인원 확인, 세션 잠금, 전투 씬 로딩, 플레이어 Spawn을 제어합니다. 제한 시간·사망·타임아웃에 따른 승패 판정은 별도의 Match Manager가 담당합니다.
 
 ## Code Samples
 
 | 영역 | 코드 | 확인할 수 있는 내용 |
 |---|---|---|
-| Combat | [`CodeSamples/Combat`](CodeSamples/Combat) | Request–Resolver–Result 분리, Authority 검증, Shield·Armor·ACS 처리 순서 |
-| Movement | `CodeSamples/Movement` *(준비 중)* | 이동 계산과 네트워크 상태 분리 |
-| Targeting | `CodeSamples/Targeting` *(준비 중)* | Hard Lock과 Lag Compensation 탐색 |
-| Match Flow | `CodeSamples/MatchFlow` *(준비 중)* | 싱글·멀티 씬 및 승패 흐름 |
+| Combat | [CodeSamples/Combat](./CodeSamples/Combat) | Request–Resolver–Result 분리, Authority 검증, Shield·Armor·ACS 처리 순서 |
+| Movement | [CodeSamples/Movement](./CodeSamples/Movement) | 수직·수평 이동 계산, 에너지 소비, 회전 우선순위, 단일 이동 Writer |
+| Targeting | [CodeSamples/Targeting](./CodeSamples/Targeting) | Hard Lock 후보 필터링, Runner 검증, Lag Compensation 탐색 |
+| Match Flow | [CodeSamples/MatchFlow](./CodeSamples/MatchFlow) | 싱글·멀티 진입, 세션 잠금, Server 전용 Spawn 흐름 |
 
 ## Technical Decisions
 
-- **Server-authoritative results** — 클라이언트 입력과 실제 전투 결과를 구분합니다.
-- **Request / Resolve / Result** — 판정, 수치 변경, VFX·UI 소비 지점을 분리합니다.
-- **Packed network state** — 이동 상태를 명시적인 네트워크 구조체로 관리합니다.
-- **Gameplay / Presentation separation** — 예측·재시뮬레이션 대상 로직과 시각 표현을 분리합니다.
+- **Single movement writer**: 실제 CharacterController 이동을 한 계층에 모아 중복 적용을 방지했습니다.
+- **Authority-first combat**: 최종 AP·ACS 변경은 State Authority만 수행합니다.
+- **Request/Result separation**: 판정 데이터와 적용 결과를 분리해 UI·VFX·로그가 계산 로직에 직접 결합되지 않게 했습니다.
+- **Lag-compensated targeting**: 멀티플레이 무기 탐색에 Subtick Accuracy 기반 보정 쿼리를 사용합니다.
+- **Explicit match ownership**: 전투 시작과 Spawn은 Server만 수행하며, 전투 시작 후 세션을 닫습니다.
+- **Data-driven tuning**: 이동·무기 설정은 ScriptableObject 기반 데이터로 관리합니다.
 
 ## Tech Stack
 
-| Area | Technology |
+| 분류 | 기술 |
 |---|---|
-| Client | Unity 6 · C# |
-| Network | Photon Fusion 2 |
-| Backend | UGS Authentication · Cloud Save · Leaderboards |
-| Rendering | URP · Visual Effect Graph |
-| Input / Animation | Input System · Animation Rigging |
+| Engine | Unity 6000.4.11f1 · URP |
+| Language | C# |
+| Networking | Photon Fusion 2 · Host Mode · State Authority |
+| Backend | Unity Gaming Services Authentication · Cloud Save · Leaderboards |
+| Gameplay | CharacterController · Modular Weapons · Projectile · Shield · ACS |
+| Tools | Git · GitHub · Notion |
 
 ## Repository Scope
 
-원본 Unity 프로젝트는 외부 에셋과 팀 작업물을 포함하고 있어 Private으로 유지합니다. 이 Showcase에는 제가 작성하고 설명할 수 있는 코드, 직접 제작한 문서와 공개 가능한 미디어만 선별합니다.
+이 저장소는 채용 검토용 Showcase입니다. 원본 Unity 프로젝트는 팀 작업물과 라이선스가 있는 외부 에셋을 포함하고 있어 Private으로 유지합니다.
 
-현재 저장소는 **Private 준비 단계**입니다. 코드 검토, 미디어 추가, 링크 점검과 라이선스 확인을 마친 뒤 Public으로 전환합니다.
+공개 범위에는 다음 항목만 포함합니다.
+
+- 직접 구현하고 설명 가능한 핵심 C# 코드
+- 시스템 구조와 Authority 규칙 문서
+- 프로젝트 소개 및 추후 추가할 Gameplay 미디어
+
+코드 샘플은 핵심 책임을 검토하기 위한 선별본이며, 원본 프로젝트의 전체 의존성과 에셋을 포함하지 않아 단독 실행되지 않습니다.
