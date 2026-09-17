@@ -6,19 +6,13 @@
     <img src="https://img.shields.io/badge/Unity-6000.4.11f1-000000?logo=unity&amp;logoColor=white" alt="Unity 6000.4.11f1">
     <img src="https://img.shields.io/badge/C%23-Gameplay_Code-512BD4?logo=csharp&amp;logoColor=white" alt="C# Gameplay Code">
     <img src="https://img.shields.io/badge/Photon-Fusion_2-004480" alt="Photon Fusion 2">
-    <img src="https://img.shields.io/badge/Status-Private_Preparation-E9A23B" alt="Private Preparation">
+    <img src="https://img.shields.io/badge/Status-Public_Showcase-2EA44F" alt="Public Showcase">
   </p>
   <p><a href="https://wjddh1998.itch.io/rusty-iron-project"><strong>⬇ Playable Windows Build</strong></a> · <a href="#code-samples"><strong>🧩 Review Code Samples</strong></a></p>
   <p><a href="#overview">Overview</a> · <a href="#my-role">My Role</a> · <a href="#core-systems">Core Systems</a> · <a href="#code-samples">Code Samples</a> · <a href="#tech-stack">Tech Stack</a></p>
 </div>
 
 ---
-
-## Gameplay Preview
-
-> Gameplay 영상과 기능별 GIF는 Public 전환 전 추가합니다. 현재 Windows Alpha 빌드와 데모 영상은 [itch.io 프로젝트 페이지](https://wjddh1998.itch.io/rusty-iron-project)에서 확인할 수 있습니다.
-
-<!-- Public 전환 전 docs/images의 Gameplay, Quick Boost, Lock-On, PvP GIF를 이 위치에 배치합니다. -->
 
 ## Overview
 
@@ -120,6 +114,10 @@ Host의 State Authority를 기준으로 참가 인원 확인, 세션 잠금, 전
 
 - 직접 구현하고 설명 가능한 핵심 C# 코드
 - 시스템 구조와 Authority 규칙 문서
-- 프로젝트 소개 및 추후 추가할 Gameplay 미디어
+- itch.io에서 확인할 수 있는 실행 빌드 연결
 
 코드 샘플은 핵심 책임을 검토하기 위한 선별본이며, 원본 프로젝트의 전체 의존성과 에셋을 포함하지 않아 단독 실행되지 않습니다.
+
+## Usage Notice
+
+이 저장소의 코드와 문서는 포트폴리오 검토 목적으로 공개합니다. 별도 라이선스가 명시되지 않은 자료의 복제·재배포 권한은 부여하지 않습니다.
