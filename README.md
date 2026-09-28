@@ -42,6 +42,7 @@
 - State Authority 기반 데미지 및 승패 판정
 - 싱글·멀티 씬 전환과 PvP Match Flow
 - Unity Gaming Services 인증·Cloud Save·Leaderboard 연동
+- 교체형 프레임 파츠·무기용 Unity Editor 에셋 제작·관리 도구
 
 ## Core Systems
 
@@ -77,6 +78,10 @@ Hard Lock 대상 등록과 후보 필터링을 분리하고, 무기 발사 탐�
 
 Host의 State Authority를 기준으로 참가 인원 확인, 세션 잠금, 전투 씬 로딩, 플레이어 Spawn을 제어합니다. 제한 시간·사망·타임아웃에 따른 승패 판정은 별도의 Match Manager가 담당합니다.
 
+### 5. Asset Authoring Tools
+
+FBX 모델 또는 무기 프리팹에서 게임용 프리팹과 ScriptableObject를 만들고 데이터베이스에 등록하는 Editor 창을 구현했습니다. 별도 관리 창에서는 등록된 파츠·무기를 검색하고, 정의 오류와 중복 ID를 확인하며, Inspector에서 바로 편집할 수 있습니다. [작업 흐름과 코드 예시](./CodeSamples/AssetTools/README.md)를 확인할 수 있습니다.
+
 ## Code Samples
 
 | 영역 | 코드 | 확인할 수 있는 내용 |
@@ -85,6 +90,7 @@ Host의 State Authority를 기준으로 참가 인원 확인, 세션 잠금, 전
 | Movement | [CodeSamples/Movement](./CodeSamples/Movement/README.md) | 수직·수평 이동 계산, 에너지 소비, 회전 우선순위, 단일 이동 Writer |
 | Targeting | [CodeSamples/Targeting](./CodeSamples/Targeting/README.md) | Hard Lock 후보 필터링, Runner 검증, Lag Compensation 탐색 |
 | Match Flow | [CodeSamples/MatchFlow](./CodeSamples/MatchFlow/README.md) | 싱글·멀티 진입, 세션 잠금, Server 전용 Spawn 흐름 |
+| Asset Tools | [CodeSamples/AssetTools](./CodeSamples/AssetTools/README.md) | FBX·프리팹에서 SO 생성·등록, 목록 검색·검증·편집, 삭제 시 DB 참조 정리 |
 
 ## Technical Decisions
 
