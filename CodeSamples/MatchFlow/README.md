@@ -1,33 +1,25 @@
 # Match Flow
 
-이 폴더는 R.I.P의 **방 준비 상태 확인·세션 잠금·전투 씬 로딩·Host 권한 기반 플레이어 생성** 흐름을 선별한 코드 샘플입니다.
+개인 담당 네트워크 흐름 중 세션 잠금·씬 진입·Server 전용 Spawn을 보여줍니다.
 
-## Included File
+## Files
 
 | 파일 | 역할 |
 |---|---|
-| [NetworkMatchFlow.cs](./NetworkMatchFlow.cs) | 전투 시작 조건, 세션 잠금, 싱글·멀티 씬 전환, Server 전용 플레이어 생성 제어 |
+| [NetworkMatchFlow.cs](./NetworkMatchFlow.cs) | 전투 시작 인원 조건, 세션 잠금, 싱글·멀티 씬 진입과 플레이어 생성 |
 
-## State Flow
+## Responsibilities
 
-```mermaid
-stateDiagram-v2
-    [*] --> Waiting
-    Waiting --> Loading: Server + minimum players
-    Loading --> Battle: player scene + map scene loaded
-    Battle --> Reset: session end
-    Reset --> Waiting
-```
+- CanStartBattle는 Runner 실행 상태·세션·Server·최소 참가 인원을 확인합니다. 로비 Ready 조건은 NetworkManager에서 결합합니다.
+- 시작 시 세션 입장을 닫고 검색 목록에서 숨깁니다.
+- Player Scene은 Single, 선택 Map Scene은 Additive로 로드합니다.
+- 씬 준비와 로드아웃을 연결해 Server가 플레이어를 생성합니다.
+- 싱글 플레이는 별도 Map 진입 경로를 사용하며 세션 종료 후 흐름을 초기화합니다.
 
-## Authority Rules
+## Related Systems
 
-- `runner.IsServer`인 인스턴스만 전투 시작과 플레이어 생성을 수행합니다.
-- 최소 참가 인원을 충족한 경우에만 멀티플레이 전투를 시작합니다.
-- 전투 준비가 끝나면 세션을 닫고 검색 목록에서 숨겨 중도 입장을 방지합니다.
-- Player Scene은 Single, 선택된 Map Scene은 Additive 방식으로 로드합니다.
-- 씬 로딩 완료 후 Server가 활성 플레이어의 Loadout을 확인하고 Spawn합니다.
-- 싱글 플레이는 같은 흐름 객체를 사용하되 Map Scene 진입 경로를 분리합니다.
+참가자별 시각 준비와 인트로 시작은 [Battle Readiness](../BattleReadiness/README.md)에서 확인할 수 있습니다. 제한 시간·사망·FFA 탈락·결과는 원본 MatchManager가 담당합니다.
 
-## Scope
+## Dependencies
 
-실제 제한 시간·사망·타임아웃·최종 승패 계산은 원본 Private 저장소의 `MultiplayerMatchManager`가 담당합니다. 해당 클래스는 UI, Loadout, PlayerHealth 등 의존성이 크므로 통째로 공개하지 않고 이 샘플에서는 전투 진입과 권한 흐름만 보여줍니다.
+NetworkManager, PlayerSpawner, MultiplayerMatchManager, MapSceneContext, 로딩 요청과 Photon Fusion 씬 관리가 필요합니다. 이 선별본은 단독 실행되지 않습니다.

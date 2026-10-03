@@ -1,40 +1,32 @@
-# Targeting Pipeline
+# Targeting
 
-이 폴더는 R.I.P의 **Hard Lock 대상 등록·후보 필터링·Photon Fusion Lag Compensation 기반 무기 탐색**을 선별한 코드 샘플입니다.
+개인 구현의 하드락 후보·시야 검사와 팀 공동 무기 계층에서 사용하는 보정 탐색 코드입니다.
 
-## Included Files
+## Files
 
 | 파일 | 역할 |
 |---|---|
-| [HardLockTarget.cs](./HardLockTarget.cs) | 활성 타겟을 정적 레지스트리에 등록하고 조준 기준점을 제공 |
-| [HardLockTargetScanner.cs](./HardLockTargetScanner.cs) | 자기 자신·다른 Runner·사망 대상을 제외하고 거리 내 Hard Lock 후보 수집 |
-| [WeaponTargetScanner.cs](./WeaponTargetScanner.cs) | Lag Compensation OverlapSphere와 시야각을 이용해 가장 가까운 유효 무기 타겟 선택 |
+| [HardLockTarget.cs](./HardLockTarget.cs) | 활성 타겟 등록과 조준 기준점 |
+| [HardLockTargetScanner.cs](./HardLockTargetScanner.cs) | 자기 자신·다른 Runner·사망 대상을 제외하고 거리 내 후보 수집 |
+| [PlayerHardLockController.LineOfSight.cs](./PlayerHardLockController.LineOfSight.cs) | 카메라와 대상 사이 시야 검사 멤버 발췌 |
+| [WeaponTargetScanner.cs](./WeaponTargetScanner.cs) | Lag Compensation 쿼리·시야각으로 가장 가까운 무기 타겟 선택 |
 
-## Target Selection Flow
+## Selection Paths
 
 ```mermaid
 flowchart TD
-    A[Active Targets] --> B[Runner and Life Filter]
-    B --> C[Radius and Angle Filter]
-    C --> D[Lag Compensated Query]
-    D --> E[Nearest Valid Target]
-    E --> F[Fallback Aim Point]
+    H[Hard Lock Registry] --> F[Runner / Life / Radius Filter]
+    F --> V[Camera Line of Sight]
+    V --> L[Hard Lock Selection / Retention]
+    W[Weapon Query] --> Q[Lag Compensation OverlapSphere]
+    Q --> A[Source / Angle / Distance Filter]
+    A --> T[Nearest Hit Position or Fallback]
 ```
 
-## Validation Rules
+Hard Lock 스캐너는 활성 여부·Runner·생존·반경을 검사합니다. Controller의 시야 검사는 카메라에서 대상 AimPoint까지 RaycastNonAlloc을 수행해 자기 자신과 대상 Collider를 제외한 차폐물을 확인합니다. 입력·화면 중심 후보 선택·락 유지 로직은 발췌 범위 밖입니다.
 
-- 공격자 자신의 `NetworkObject`는 제외합니다.
-- 서로 다른 `NetworkRunner`에 속한 객체는 후보에 포함하지 않습니다.
-- 사망한 `PlayerHealth`는 Hard Lock 후보에서 제외합니다.
-- 무기 탐색은 `HitOptions.SubtickAccuracy`와 `IgnoreInputAuthority`를 사용합니다.
-- 검색 반경과 시야각을 통과한 후보 중 가장 가까운 위치를 선택합니다.
-- 유효한 후보가 없으면 발사 방향 앞쪽의 Fallback 지점을 반환합니다.
+무기 탐색은 SubtickAccuracy·IgnoreInputAuthority 옵션의 보정 구 쿼리에서 자기 자신을 제외하고 각도·거리 조건으로 후보를 선택합니다. 실패하면 발사 방향 앞쪽 fallback을 반환합니다. 이 스캐너 자체에는 하드락 스캐너의 명시적인 사망 필터나 시야 Raycast가 없습니다.
 
-## Public Review Changes
+## Dependencies
 
-- 기존 `RIP.Waepons.Targeting` 네임스페이스 오타를 `RIP.Weapons.Targeting`으로 수정했습니다.
-- 타겟 등록, 일반 Hard Lock 검색, 네트워크 보정 무기 검색을 별도 클래스로 유지했습니다.
-
-## Scope
-
-카메라 전환과 입력 순환을 담당하는 `PlayerHardLockController`는 UI·카메라·네트워크 의존성이 커서 공개 샘플에서 제외했습니다. 이 폴더는 탐색 규칙과 네트워크 판정 방식을 보여주는 데 집중합니다.
+Photon Fusion, PlayerHealth와 나머지 카메라·입력 계층이 필요합니다. 시야 검사 파일은 Controller의 관련 멤버만 포함하며 샘플은 단독 실행되지 않습니다.
