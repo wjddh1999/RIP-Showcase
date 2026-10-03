@@ -19,7 +19,7 @@
 | 항목 | 내용 |
 |---|---|
 | Genre | 3D Mecha Action · PvE · PvP |
-| Development | 2026.06 – Present |
+| Development | 2026.06 – 2026.08 |
 | Team | 3명 |
 | Role | 팀장 · 전체 게임 기획 · Unity Client / Gameplay Programmer |
 | Engine | Unity 6000.4.11f1 |
